@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 import {
   ShieldCheck,
   Megaphone,
@@ -8,15 +8,10 @@ import {
   Zap,
   Users,
   Star,
-  Ticket,
-  Gift,
-  Activity,
-  Trophy,
-  Gamepad2,
-  Building2,
-} from "lucide-react"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
+} from "lucide-react";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+import { bots, systems } from "@/lib/data";
 
 const features = [
   {
@@ -43,59 +38,13 @@ const features = [
     description:
       "Registre e acompanhe a presença dos membros em eventos e reuniões do servidor.",
   },
-]
+];
 
 const stats = [
   { value: "24/7", label: "Sempre online" },
   { value: "100%", label: "Gratuito para começar" },
   { value: "Rápido", label: "Setup em minutos" },
-]
-
-const mainBots = [
-  {
-    name: "Torcida Bot",
-    description: "Sistema completo de verificação e gerenciamento de membros com cargos automáticos para sua torcida.",
-    icon: ShieldCheck,
-  },
-  {
-    name: "FiveM Bot",
-    description: "Gerenciamento especializado para servidores de roleplay FiveM com controles avançados.",
-    icon: Gamepad2,
-  },
-  {
-    name: "Facção Bot",
-    description: "Organização completa de facções com hierarquias, cofres e gerenciamento de membros.",
-    icon: Building2,
-  },
-  {
-    name: "Corporação Bot",
-    description: "Sistema de equipes e grupos corporativos com atribuições e controle de acesso.",
-    icon: Users,
-  },
-]
-
-const additionalSystems = [
-  {
-    name: "Sistema de Tickets",
-    description: "Gerencie suportes e chamados automaticamente",
-    icon: Ticket,
-  },
-  {
-    name: "Sistema de Sorteios",
-    description: "Crie sorteios incríveis para sua comunidade",
-    icon: Gift,
-  },
-  {
-    name: "Sistema de Logs",
-    description: "Registre todas as ações do servidor",
-    icon: Activity,
-  },
-  {
-    name: "Sistema de Ranking",
-    description: "Classifique membros por atividade",
-    icon: Trophy,
-  },
-]
+];
 
 export default function HeroSection() {
   return (
@@ -128,12 +77,14 @@ export default function HeroSection() {
 
             {/* Subtitle */}
             <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
-              Gerencie qualquer tipo de servidor Discord com automação completa
+              Automatize e escale seu servidor Discord com bots e sistemas
+              inteligentes
             </p>
 
             {/* Description */}
             <p className="max-w-xl text-base text-muted-foreground leading-relaxed text-pretty">
-              Bots completos e sistemas adicionais para personalizar seu servidor
+              Bots completos e sistemas adicionais para personalizar seu
+              servidor
             </p>
 
             {/* CTAs */}
@@ -142,7 +93,7 @@ export default function HeroSection() {
                 href="/dashboard"
                 className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-all hover:shadow-[0_0_24px_rgba(254,83,0,0.4)] active:scale-95"
               >
-                Começar agora
+                Começar gratuitamente
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
@@ -157,8 +108,12 @@ export default function HeroSection() {
             <div className="mt-8 flex flex-col sm:flex-row items-center gap-8 sm:gap-12">
               {stats.map((s) => (
                 <div key={s.label} className="flex flex-col items-center gap-1">
-                  <span className="text-3xl font-extrabold text-primary">{s.value}</span>
-                  <span className="text-xs text-muted-foreground">{s.label}</span>
+                  <span className="text-3xl font-extrabold text-primary">
+                    {s.value}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {s.label}
+                  </span>
                 </div>
               ))}
             </div>
@@ -169,12 +124,15 @@ export default function HeroSection() {
         <section id="features" className="py-24 bg-card border-t border-border">
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center mb-14 flex flex-col gap-3">
-              <p className="text-xs font-semibold text-primary uppercase tracking-widest">Funcionalidades</p>
+              <p className="text-xs font-semibold text-primary uppercase tracking-widest">
+                Funcionalidades
+              </p>
               <h2 className="text-3xl md:text-4xl font-bold text-balance">
-                Tudo que sua torcida precisa
+                Tudo que seu servidor precisa
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto text-pretty">
-                Um conjunto completo de ferramentas para organizar, moderar e engajar sua comunidade no Discord.
+                Um conjunto completo de ferramentas para organizar, moderar e
+                engajar sua comunidade no Discord.
               </p>
             </div>
 
@@ -188,8 +146,12 @@ export default function HeroSection() {
                     <f.icon className="w-5 h-5 text-primary" />
                   </span>
                   <div className="flex flex-col gap-1">
-                    <h3 className="font-semibold text-foreground text-sm">{f.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{f.description}</p>
+                    <h3 className="font-semibold text-foreground text-sm">
+                      {f.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {f.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -201,17 +163,20 @@ export default function HeroSection() {
         <section className="py-24 bg-background border-t border-border">
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center mb-14 flex flex-col gap-3">
-              <p className="text-xs font-semibold text-primary uppercase tracking-widest">Bots Principais</p>
+              <p className="text-xs font-semibold text-primary uppercase tracking-widest">
+                Bots Principais
+              </p>
               <h2 className="text-3xl md:text-4xl font-bold text-balance">
                 Bots completos para qualquer tipo de servidor
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto text-pretty">
-                Cada bot foi desenvolvido para resolver desafios específicos na gestão da sua comunidade.
+                Cada bot foi desenvolvido para resolver desafios específicos na
+                gestão da sua comunidade.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {mainBots.map((bot) => (
+              {bots.map((bot) => (
                 <div
                   key={bot.name}
                   className="group p-8 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-[0_0_24px_rgba(254,83,0,0.1)] transition-all duration-300 flex flex-col gap-6"
@@ -220,8 +185,12 @@ export default function HeroSection() {
                     <bot.icon className="w-7 h-7 text-primary" />
                   </span>
                   <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold text-foreground">{bot.name}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{bot.description}</p>
+                    <h3 className="text-xl font-bold text-foreground">
+                      {bot.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {bot.description}
+                    </p>
                   </div>
                   <Link
                     href="#"
@@ -240,17 +209,20 @@ export default function HeroSection() {
         <section className="py-24 bg-card border-t border-border">
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center mb-14 flex flex-col gap-3">
-              <p className="text-xs font-semibold text-primary uppercase tracking-widest">Sistemas Adicionais</p>
+              <p className="text-xs font-semibold text-primary uppercase tracking-widest">
+                Sistemas Adicionais
+              </p>
               <h2 className="text-3xl md:text-4xl font-bold text-balance">
                 Expanda com sistemas modulares
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto text-pretty">
-                Adicione funcionalidades extras para potencializar sua comunidade.
+                Adicione funcionalidades extras para potencializar sua
+                comunidade.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {additionalSystems.map((system) => (
+              {systems.map((system) => (
                 <div
                   key={system.name}
                   className="group p-6 rounded-2xl border border-border bg-background hover:border-primary/40 hover:shadow-[0_0_24px_rgba(254,83,0,0.1)] transition-all duration-300 flex flex-col gap-4"
@@ -259,8 +231,12 @@ export default function HeroSection() {
                     <system.icon className="w-6 h-6 text-primary" />
                   </span>
                   <div className="flex flex-col gap-1">
-                    <h3 className="text-sm font-bold text-foreground">{system.name}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{system.description}</p>
+                    <h3 className="text-sm font-bold text-foreground">
+                      {system.name}
+                    </h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {system.description}
+                    </p>
                   </div>
                   <Link
                     href="#"
@@ -279,7 +255,9 @@ export default function HeroSection() {
         <section className="py-24">
           <div className="mx-auto max-w-7xl px-6 flex flex-col items-center gap-12">
             <div className="text-center flex flex-col gap-3">
-              <p className="text-xs font-semibold text-primary uppercase tracking-widest">Depoimentos</p>
+              <p className="text-xs font-semibold text-primary uppercase tracking-widest">
+                Depoimentos
+              </p>
               <h2 className="text-3xl md:text-4xl font-bold text-balance">
                 O que nossas torcidas dizem
               </h2>
@@ -309,7 +287,10 @@ export default function HeroSection() {
                 >
                   <div className="flex gap-0.5">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                      <Star
+                        key={i}
+                        className="w-4 h-4 fill-primary text-primary"
+                      />
                     ))}
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -320,7 +301,9 @@ export default function HeroSection() {
                       {t.name[0]}
                     </span>
                     <div>
-                      <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {t.name}
+                      </p>
                       <p className="text-xs text-muted-foreground">{t.role}</p>
                     </div>
                   </div>
@@ -338,7 +321,8 @@ export default function HeroSection() {
               Pronto para elevar sua torcida?
             </h2>
             <p className="text-muted-foreground max-w-md text-pretty">
-              Comece agora e descubra como o BlazeSystem pode transformar a gestão do seu servidor Discord.
+              Comece agora e descubra como o BlazeSystem pode transformar a
+              gestão do seu servidor Discord.
             </p>
             <Link
               href="/dashboard"
@@ -352,5 +336,5 @@ export default function HeroSection() {
       </main>
       <Footer />
     </>
-  )
+  );
 }
