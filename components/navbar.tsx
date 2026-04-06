@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation"
 import { Flame, Menu, X } from "lucide-react"
 import { useState } from "react"
 
+import AuthButtons from "@/components/auth-buttons"
+
 export default function Navbar() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -45,12 +47,7 @@ export default function Navbar() {
 
         {/* CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Entrar com Discord
-          </Link>
+          <AuthButtons />
           <Link
             href="https://discord.com"
             className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-all hover:shadow-[0_0_16px_rgba(254,83,0,0.35)] active:scale-95"
@@ -84,6 +81,7 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          <AuthButtons mobile />
           <Link
             href="https://discord.com"
             className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold text-center hover:bg-primary/90 transition-colors"
