@@ -1,5 +1,6 @@
-import Link from "next/link"
-import { Flame, Github, Twitter } from "lucide-react"
+import Link from "next/link";
+import { Flame, Github} from "lucide-react";
+import { FaDiscord } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -16,24 +17,44 @@ export default function Footer() {
             </span>
           </Link>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Automatize e gerencie sua torcida no Discord com a melhor plataforma do Brasil.
+            Automatize e gerencie sua torcida no Discord com a melhor plataforma
+            do Brasil.
           </p>
         </div>
 
         {/* Links */}
         <div className="flex flex-col gap-3">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Produto</p>
-          <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Início</Link>
-          <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Planos</Link>
-          <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</Link>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+            Produto
+          </p>
+          <Link
+            href="/"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Início
+          </Link>
+          <Link
+            href="/pricing"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Planos
+          </Link>
+          <Link
+            href="/dashboard"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Dashboard
+          </Link>
         </div>
 
         {/* Social */}
         <div className="flex flex-col gap-3">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Redes sociais</p>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+            Redes sociais
+          </p>
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com"
+              href="https://github.com/CostaCodesFullStack"
               target="_blank"
               rel="noreferrer"
               className="text-muted-foreground hover:text-primary transition-colors"
@@ -42,13 +63,13 @@ export default function Footer() {
               <Github className="w-5 h-5" />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://discord.gg/RXDEBXj4Tr"
               target="_blank"
               rel="noreferrer"
               className="text-muted-foreground hover:text-primary transition-colors"
-              aria-label="Twitter"
+              aria-label="Discord"
             >
-              <Twitter className="w-5 h-5" />
+              <FaDiscord className="w-5 h-5" />
             </a>
           </div>
         </div>
@@ -57,5 +78,5 @@ export default function Footer() {
         © {new Date().getFullYear()} BlazeSystem. Todos os direitos reservados.
       </div>
     </footer>
-  )
+  );
 }

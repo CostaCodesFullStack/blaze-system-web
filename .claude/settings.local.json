@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(findstr /i api)",
+      "Bash(findstr /i env)",
+      "Bash(findstr /i \"\\\\.env\")",
+      "Bash(dir:*)"
+    ]
+  }
+}
