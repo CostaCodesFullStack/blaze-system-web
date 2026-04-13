@@ -38,3 +38,54 @@ model Subscription {
   @@index([userId])
   @@index([stripeCustomerId])
 }
+
+model User {
+  /// ID do usuário no Discord (session.user.id)
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  botConfigs BotConfig[]
+}
+
+model BotConfig {
+  id      String @id @default(cuid())
+  userId  String
+  guildId String
+
+  // Tipo do bot escolhido pelo cliente
+  botType String // "torcida" | "fivem_server" | "fivem_faccao"
+
+  // Credenciais do Application Discord criado pelo cliente
+  botToken    String // token do bot (armazenar criptografado em produção)
+  botClientId String // client_id para gerar o link de instalação
+
+  // Personalização visual
+  botName   String? // nome customizado do bot
+  botAvatar String? // URL pública do avatar
+
+  // Sistemas ativos (array de strings)
+  systems String[] // ["welcome", "log", "cargo_auto", "status"]
+
+  // Canais e cargos configurados
+  welcomeChannelId String?
+  logChannelId     String?
+  autoRoleId       String?
+
+  // Embed customizado
+  embedColor  String?  @default("#5865F2")
+  embedText   String?
+  embedBanner String? // URL da imagem do banner
+
+  // Estado
+  isActive Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, guildId])
+  @@index([guildId])
+  @@index([isActive])
+}

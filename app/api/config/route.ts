@@ -4,6 +4,11 @@ import { z } from "zod";
 
 import { auth } from "@/auth";
 import { getAdminDiscordGuilds } from "@/lib/discord";
+import {
+  getServerLimitForPlan,
+  requireActivePlan,
+  serverLimitExceededResponse,
+} from "@/lib/plan";
 import { prisma } from "@/lib/prisma";
 
 const ConfigPayloadSchema = z.object({
@@ -83,6 +88,11 @@ export async function POST(request: Request) {
       );
     }
 
+    const activePlan = await requireActivePlan(userId);
+    if (!activePlan.ok) {
+      return activePlan.response;
+    }
+
     const body = await request.json();
 
     let payload: ConfigPayload;
@@ -109,6 +119,23 @@ export async function POST(request: Request) {
 
     if (!authorizedGuildIds.has(payload.guildId)) {
       return getForbiddenResponse();
+    }
+
+    const existingConfig = await prisma.config.findUnique({
+      where: {
+        userId_guildId: {
+          userId,
+          guildId: payload.guildId,
+        },
+      },
+    });
+
+    if (!existingConfig) {
+      const count = await prisma.config.count({ where: { userId } });
+      const limit = getServerLimitForPlan(activePlan.subscription.plan);
+      if (count >= limit) {
+        return serverLimitExceededResponse();
+      }
     }
 
     const config = await prisma.config.upsert({
@@ -164,6 +191,11 @@ export async function PATCH(request: Request) {
         { success: false, error: "Unauthorized" },
         { status: 401 },
       );
+    }
+
+    const activePlanPatch = await requireActivePlan(userId);
+    if (!activePlanPatch.ok) {
+      return activePlanPatch.response;
     }
 
     const body = await request.json();
@@ -253,6 +285,11 @@ export async function GET(request: Request) {
         { success: false, error: "Unauthorized" },
         { status: 401 },
       );
+    }
+
+    const activePlanGet = await requireActivePlan(userId);
+    if (!activePlanGet.ok) {
+      return activePlanGet.response;
     }
 
     const { searchParams } = new URL(request.url);
