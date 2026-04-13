@@ -120,6 +120,7 @@ export async function POST(req: Request) {
         // Mapear status do Stripe para nosso banco
         const statusMap: Record<string, string> = {
           active: "active",
+          trialing: "trialing",
           past_due: "past_due",
           unpaid: "unpaid",
           canceled: "canceled",

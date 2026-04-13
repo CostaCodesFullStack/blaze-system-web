@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
 import { getAdminDiscordGuilds } from "@/lib/discord";
+import { requireActivePlan } from "@/lib/plan";
 
 export async function GET() {
   try {
@@ -12,6 +13,11 @@ export async function GET() {
         { success: false, error: "Unauthorized" },
         { status: 401 },
       );
+    }
+
+    const activePlan = await requireActivePlan(session.user.id);
+    if (!activePlan.ok) {
+      return activePlan.response;
     }
 
     const guilds = await getAdminDiscordGuilds(session.accessToken);

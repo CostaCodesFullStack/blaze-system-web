@@ -31,7 +31,7 @@ export async function GET() {
       return_url: process.env.NEXT_PUBLIC_APP_URL,
     });
 
-    return NextResponse.json({ url: portalSession.url });
+    return NextResponse.redirect(portalSession.url);
   } catch (error) {
     console.error("❌ Erro ao criar billing portal:", error);
     return NextResponse.json(

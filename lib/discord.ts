@@ -52,7 +52,19 @@ function getGuildIconUrl(guildId: string, icon: string | null) {
   return `https://cdn.discordapp.com/icons/${guildId}/${icon}.${extension}`;
 }
 
+const GUILD_CACHE_TTL_MS = 5 * 60 * 1000;
+const adminGuildsCache = new Map<
+  string,
+  { guilds: DiscordGuild[]; expiresAt: number }
+>();
+
 export async function getAdminDiscordGuilds(accessToken: string) {
+  const now = Date.now();
+  const cached = adminGuildsCache.get(accessToken);
+  if (cached && cached.expiresAt > now) {
+    return cached.guilds;
+  }
+
   const response = await fetch("https://discord.com/api/users/@me/guilds", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -68,7 +80,7 @@ export async function getAdminDiscordGuilds(accessToken: string) {
 
   const guilds = (await response.json()) as DiscordGuildApiResponse[];
 
-  return guilds
+  const result = guilds
     .filter(
       (guild) => guild.owner || hasAdministratorPermission(guild.permissions),
     )
@@ -77,6 +89,13 @@ export async function getAdminDiscordGuilds(accessToken: string) {
       iconUrl: getGuildIconUrl(guild.id, guild.icon),
     }))
     .sort((left, right) => left.name.localeCompare(right.name, "pt-BR"));
+
+  adminGuildsCache.set(accessToken, {
+    guilds: result,
+    expiresAt: now + GUILD_CACHE_TTL_MS,
+  });
+
+  return result;
 }
 
 export async function getAuthorizedDiscordGuild(
