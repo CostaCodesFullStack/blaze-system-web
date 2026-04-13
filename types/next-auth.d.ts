@@ -5,6 +5,7 @@ declare module "next-auth" {
     accessToken?: string;
     user: DefaultSession["user"] & {
       id: string;
+      email: string;
       username: string | null;
       globalName: string | null;
       discriminator: string | null;
@@ -27,6 +28,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     accessToken?: string;
     discordId?: string;
+    email?: string;
     username?: string | null;
     globalName?: string | null;
     discriminator?: string | null;

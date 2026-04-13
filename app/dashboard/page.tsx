@@ -4,17 +4,13 @@ import { ArrowRight, Bot, ShieldCheck, SlidersHorizontal } from "lucide-react";
 
 import { auth } from "@/auth";
 import { bots } from "@/lib/data";
-import {
-  getAdminDiscordGuilds,
-  type DiscordGuild,
-} from "@/lib/discord";
-import { connectDB } from "@/lib/mongodb";
-import { Config, type ConfigDocument } from "@/models/Config";
+import { getAdminDiscordGuilds, type DiscordGuild } from "@/lib/discord";
+import { prisma } from "@/lib/prisma";
 
 const botLabelById = new Map(bots.map((bot) => [bot.id, bot.name]));
 
 type DashboardGuild = DiscordGuild & {
-  config: ConfigDocument | null;
+  config: any | null;
 };
 
 export default async function DashboardPage() {
@@ -24,12 +20,15 @@ export default async function DashboardPage() {
     redirect("/api/auth/signin?callbackUrl=/dashboard");
   }
 
-  await connectDB();
-
-  const configs = (await Config.find({ userId: session.user.id })
-    .sort({ updatedAt: -1 })
-    .lean()
-    .exec()) as ConfigDocument[];
+  let configs: any[] = [];
+  try {
+    configs = await prisma.config.findMany({
+      where: { userId: session.user.id },
+      orderBy: { updatedAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Erro ao buscar configuracoes:", error);
+  }
 
   let guilds: DiscordGuild[] = [];
   let guildsError = "";
@@ -39,10 +38,12 @@ export default async function DashboardPage() {
       guilds = await getAdminDiscordGuilds(session.accessToken);
     } catch (error) {
       console.error("Erro ao carregar guilds no dashboard:", error);
-      guildsError = "Nao foi possivel carregar seus servidores do Discord agora.";
+      guildsError =
+        "Nao foi possivel carregar seus servidores do Discord agora.";
     }
   } else {
-    guildsError = "A sessao nao possui access token para consultar seus servidores.";
+    guildsError =
+      "A sessao nao possui access token para consultar seus servidores.";
   }
 
   const configByGuildId = new Map(
@@ -72,7 +73,8 @@ export default async function DashboardPage() {
           administrativa.
         </p>
         <p className="text-sm text-muted-foreground">
-          Usuario conectado: {session.user.globalName ?? session.user.name ?? "Discord"}
+          Usuario conectado:{" "}
+          {session.user.globalName ?? session.user.name ?? "Discord"}
         </p>
       </div>
 
@@ -93,7 +95,9 @@ export default async function DashboardPage() {
             className="flex flex-col gap-1 rounded-xl border border-border bg-card p-4"
           >
             <span className="text-xs text-muted-foreground">{stat.label}</span>
-            <span className="text-2xl font-bold text-foreground">{stat.value}</span>
+            <span className="text-2xl font-bold text-foreground">
+              {stat.value}
+            </span>
           </div>
         ))}
       </div>
@@ -151,14 +155,16 @@ export default async function DashboardPage() {
               <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4 text-primary" />
-                  <span>{guild.owner ? "Dono do servidor" : "Administrador"}</span>
+                  <span>
+                    {guild.owner ? "Dono do servidor" : "Administrador"}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Bot className="h-4 w-4 text-primary" />
                   <span>
                     {guild.config
-                      ? botLabelById.get(guild.config.bot) ?? guild.config.bot
+                      ? (botLabelById.get(guild.config.bot) ?? guild.config.bot)
                       : "Nenhum bot configurado"}
                   </span>
                 </div>

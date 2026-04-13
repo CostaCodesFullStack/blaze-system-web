@@ -43,6 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.discriminator = discordProfile.discriminator;
         token.locale = discordProfile.locale;
         token.verified = discordProfile.verified;
+        token.email = discordProfile.email;
       }
 
       return token;
@@ -54,11 +55,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       session.user.id =
         getStringClaim(token.discordId) ?? getStringClaim(token.sub) ?? "";
+      session.user.email =
+        getNullableStringClaim(token.email) ?? session.user.email ?? "";
       session.user.username = getNullableStringClaim(token.username);
       session.user.globalName = getNullableStringClaim(token.globalName);
-      session.user.discriminator = getNullableStringClaim(
-        token.discriminator,
-      );
+      session.user.discriminator = getNullableStringClaim(token.discriminator);
       session.user.locale = getNullableStringClaim(token.locale);
       session.user.verified = getNullableBooleanClaim(token.verified);
       session.accessToken = getStringClaim(token.accessToken);

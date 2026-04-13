@@ -1,7 +1,10 @@
-import Link from "next/link";
-import { Check, Crown, Zap, Star, ArrowRight } from "lucide-react";
+"use client";
+
+import { Check, Crown, Zap, Star, ArrowRight, Loader2 } from "lucide-react";
+import { useState } from "react";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { Button } from "@/components/ui/button";
 
 const plans = [
   {
@@ -66,6 +69,33 @@ const plans = [
 ];
 
 export default function PricingPage() {
+  const [loading, setLoading] = useState<string | null>(null);
+
+  async function handleCheckout(plan: string) {
+    try {
+      setLoading(plan);
+      const res = await fetch("/api/stripe/create-checkout", {
+        method: "POST",
+        body: JSON.stringify({ plan }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Erro ao criar sessão de checkout");
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error("Erro no checkout:", error);
+      alert("Erro ao processar o checkout. Tente novamente.");
+      setLoading(null);
+    }
+  }
+
   return (
     <>
       <Navbar />
@@ -164,17 +194,27 @@ export default function PricingPage() {
                     </ul>
 
                     {/* CTA */}
-                    <Link
-                      href="/dashboard"
-                      className={`flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all active:scale-95 ${
+                    <Button
+                      onClick={() => handleCheckout(plan.id)}
+                      disabled={loading !== null}
+                      className={`flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all active:scale-95 w-full ${
                         plan.highlight
                           ? "bg-primary text-white hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(254,83,0,0.4)]"
                           : "border border-border text-foreground hover:border-primary hover:text-primary hover:bg-primary/5"
                       }`}
                     >
-                      Assinar {plan.name}
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
+                      {loading === plan.id ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Processando...
+                        </>
+                      ) : (
+                        <>
+                          Assinar {plan.name}
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </div>
               ))}

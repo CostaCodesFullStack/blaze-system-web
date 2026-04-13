@@ -4,8 +4,7 @@ import { z } from "zod";
 
 import { auth } from "@/auth";
 import { getAdminDiscordGuilds } from "@/lib/discord";
-import { connectDB } from "@/lib/mongodb";
-import { Config } from "@/models/Config";
+import { prisma } from "@/lib/prisma";
 
 const ConfigPayloadSchema = z.object({
   guildId: z.string().min(1, "guildId é obrigatório"),
@@ -112,31 +111,28 @@ export async function POST(request: Request) {
       return getForbiddenResponse();
     }
 
-    await connectDB();
-
-    const updateData = {
-      bot: payload.bot,
-      systems: payload.systems,
-      role: payload.role,
-      channel: payload.channel,
-    };
-
-    const config = await Config.findOneAndUpdate(
-      { userId, guildId: payload.guildId },
-      {
-        $set: updateData,
-        $setOnInsert: {
+    const config = await prisma.config.upsert({
+      where: {
+        userId_guildId: {
           userId,
           guildId: payload.guildId,
         },
       },
-      {
-        new: true,
-        runValidators: true,
-        setDefaultsOnInsert: true,
-        upsert: true,
+      update: {
+        bot: payload.bot,
+        systems: payload.systems,
+        role: payload.role,
+        channel: payload.channel,
       },
-    ).exec();
+      create: {
+        userId,
+        guildId: payload.guildId,
+        bot: payload.bot,
+        systems: payload.systems,
+        role: payload.role,
+        channel: payload.channel,
+      },
+    });
 
     return NextResponse.json({
       success: true,
@@ -210,16 +206,15 @@ export async function PATCH(request: Request) {
       );
     }
 
-    await connectDB();
-
-    const config = await Config.findOneAndUpdate(
-      { userId, guildId },
-      { $set: updateData },
-      {
-        new: true,
-        runValidators: true,
+    const config = await prisma.config.update({
+      where: {
+        userId_guildId: {
+          userId,
+          guildId,
+        },
       },
-    ).exec();
+      data: updateData,
+    });
 
     if (!config) {
       return NextResponse.json(
@@ -274,9 +269,14 @@ export async function GET(request: Request) {
         return getForbiddenResponse();
       }
 
-      await connectDB();
-
-      const config = await Config.findOne({ userId, guildId }).lean().exec();
+      const config = await prisma.config.findUnique({
+        where: {
+          userId_guildId: {
+            userId,
+            guildId,
+          },
+        },
+      });
 
       if (!config) {
         return NextResponse.json(
@@ -294,15 +294,17 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, configs: [] });
     }
 
-    await connectDB();
-
-    const configs = await Config.find({
-      userId,
-      guildId: { $in: guildIds },
-    })
-      .sort({ updatedAt: -1 })
-      .lean()
-      .exec();
+    const configs = await prisma.config.findMany({
+      where: {
+        userId,
+        guildId: {
+          in: guildIds,
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
 
     return NextResponse.json({ success: true, configs });
   } catch (error) {
